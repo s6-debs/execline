@@ -1,3 +1,9 @@
+execline (2.5.3.0-1) stable; urgency=medium
+
+  * New upstream release.
+
+ -- multiplexd <multi@in-addr.xyz>  Tue, 29 Oct 2019 21:57:43 +0000
+
 execline (2.5.2.0-1) stable; urgency=medium
 
   * New upstream release.

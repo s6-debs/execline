@@ -3,7 +3,7 @@ Section: interpreters
 Priority: optional
 Maintainer: multiplexd <multi@in-addr.xyz>
 Uploaders: multiplexd <multi@in-addr.xyz>
-Build-Depends: debhelper (>= 10), quilt, libskarnet-dev (>= 2.9.0.0)
+Build-Depends: debhelper (>= 10), quilt, libskarnet-dev (>= 2.9.1.0)
 Standards-Version: 3.9.8
 Homepage: https://skarnet.org/software/execline/
 
@@ -30,7 +30,7 @@ Package: libexecline-dev
 Section: libdevel
 Architecture: any
 Multi-Arch: same
-Depends: ${misc:Depends}, libexecline2.5 (= ${binary:Version}), libskarnet-dev (>= 2.9.0.0)
+Depends: ${misc:Depends}, libexecline2.5 (= ${binary:Version}), libskarnet-dev (>= 2.9.1.0)
 Description: Interpreter for the execline language (development files)
  execline is a scripting language for systems automation.
  .
