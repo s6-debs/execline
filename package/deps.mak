@@ -4,7 +4,6 @@
 
 src/execline/background.o src/execline/background.lo: src/execline/background.c src/include/execline/execline.h
 src/execline/backtick.o src/execline/backtick.lo: src/execline/backtick.c src/include/execline/execline.h
-src/execline/cd.o src/execline/cd.lo: src/execline/cd.c
 src/execline/define.o src/execline/define.lo: src/execline/define.c src/include-local/exlsn.h
 src/execline/dollarat.o src/execline/dollarat.lo: src/execline/dollarat.c
 src/execline/elgetopt.o src/execline/elgetopt.lo: src/execline/elgetopt.c src/include/execline/execline.h
@@ -13,6 +12,8 @@ src/execline/elglob.o src/execline/elglob.lo: src/execline/elglob.c src/include-
 src/execline/emptyenv.o src/execline/emptyenv.lo: src/execline/emptyenv.c src/include/execline/execline.h
 src/execline/envfile.o src/execline/envfile.lo: src/execline/envfile.c
 src/execline/exec.o src/execline/exec.lo: src/execline/exec.c
+src/execline/execline-cd.o src/execline/execline-cd.lo: src/execline/execline-cd.c
+src/execline/execline-umask.o src/execline/execline-umask.lo: src/execline/execline-umask.c
 src/execline/execlineb.o src/execline/execlineb.lo: src/execline/execlineb.c src/include/execline/execline.h src/include-local/exlsn.h
 src/execline/exit.o src/execline/exit.lo: src/execline/exit.c
 src/execline/export.o src/execline/export.lo: src/execline/export.c
@@ -44,7 +45,6 @@ src/execline/runblock.o src/execline/runblock.lo: src/execline/runblock.c src/in
 src/execline/shift.o src/execline/shift.lo: src/execline/shift.c src/include/execline/execline.h
 src/execline/trap.o src/execline/trap.lo: src/execline/trap.c src/include/execline/execline.h
 src/execline/tryexec.o src/execline/tryexec.lo: src/execline/tryexec.c src/include/execline/execline.h
-src/execline/umask.o src/execline/umask.lo: src/execline/umask.c
 src/execline/unexport.o src/execline/unexport.lo: src/execline/unexport.c
 src/execline/wait.o src/execline/wait.lo: src/execline/wait.c src/include/execline/execline.h
 src/execline/withstdinas.o src/execline/withstdinas.lo: src/execline/withstdinas.c
@@ -72,13 +72,12 @@ src/libexecline/exlsn_importas.o src/libexecline/exlsn_importas.lo: src/libexecl
 src/libexecline/exlsn_main.o src/libexecline/exlsn_main.lo: src/libexecline/exlsn_main.c src/include/execline/execline.h src/include-local/exlsn.h
 src/libexecline/exlsn_multidefine.o src/libexecline/exlsn_multidefine.lo: src/libexecline/exlsn_multidefine.c src/include/execline/execline.h src/include-local/exlsn.h
 src/posix/posix-cd.o src/posix/posix-cd.lo: src/posix/posix-cd.c
+src/posix/posix-umask.o src/posix/posix-umask.lo: src/posix/posix-umask.c
 
 background: EXTRA_LIBS := -lskarnet ${SPAWN_LIB}
 background: src/execline/background.o ${LIBEXECLINE}
 backtick: EXTRA_LIBS := -lskarnet ${SPAWN_LIB}
 backtick: src/execline/backtick.o ${LIBEXECLINE}
-cd: EXTRA_LIBS := -lskarnet
-cd: src/execline/cd.o
 define: EXTRA_LIBS := -lskarnet
 define: src/execline/define.o ${LIBEXECLINE}
 dollarat: EXTRA_LIBS := -lskarnet
@@ -95,6 +94,10 @@ envfile: EXTRA_LIBS := -lskarnet
 envfile: src/execline/envfile.o
 exec: EXTRA_LIBS := -lskarnet
 exec: src/execline/exec.o
+execline-cd: EXTRA_LIBS := -lskarnet
+execline-cd: src/execline/execline-cd.o
+execline-umask: EXTRA_LIBS := -lskarnet
+execline-umask: src/execline/execline-umask.o
 execlineb: EXTRA_LIBS := -lskarnet
 execlineb: src/execline/execlineb.o ${LIBEXECLINE}
 exit: EXTRA_LIBS := -lskarnet
@@ -157,8 +160,6 @@ trap: EXTRA_LIBS := -lskarnet ${SPAWN_LIB}
 trap: src/execline/trap.o ${LIBEXECLINE}
 tryexec: EXTRA_LIBS := -lskarnet
 tryexec: src/execline/tryexec.o ${LIBEXECLINE}
-umask: EXTRA_LIBS := -lskarnet
-umask: src/execline/umask.o
 unexport: EXTRA_LIBS := -lskarnet
 unexport: src/execline/unexport.o
 wait: EXTRA_LIBS := -lskarnet
@@ -174,3 +175,5 @@ libexecline.so.xyzzy: EXTRA_LIBS := -lskarnet
 libexecline.so.xyzzy: src/libexecline/el_execsequence.lo src/libexecline/el_getstrict.lo src/libexecline/el_parse.lo src/libexecline/el_parse_from_buffer.lo src/libexecline/el_parse_from_string.lo src/libexecline/el_popenv.lo src/libexecline/el_pushenv.lo src/libexecline/el_semicolon.lo src/libexecline/el_spawn0.lo src/libexecline/el_spawn1.lo src/libexecline/el_substandrun.lo src/libexecline/el_substandrun_str.lo src/libexecline/el_substitute.lo src/libexecline/el_transform.lo src/libexecline/el_vardupl.lo src/libexecline/exlsn_define.lo src/libexecline/exlsn_elglob.lo src/libexecline/exlsn_importas.lo src/libexecline/exlsn_multidefine.lo src/libexecline/exlsn_exlp.lo src/libexecline/exlsn_main.lo src/libexecline/exlsn_free.lo src/libexecline/exlp.lo
 posix-cd: EXTRA_LIBS := -lskarnet
 posix-cd: src/posix/posix-cd.o
+posix-umask: EXTRA_LIBS := -lskarnet
+posix-umask: src/posix/posix-umask.o
