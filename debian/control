@@ -2,7 +2,6 @@ Source: execline
 Section: interpreters
 Priority: optional
 Maintainer: multiplexd <multi@in-addr.xyz>
-Uploaders: multiplexd <multi@in-addr.xyz>
 Build-Depends: debhelper (>= 10), quilt, libskarnet-dev (>= 2.9.2.1)
 Standards-Version: 3.9.8
 Homepage: https://skarnet.org/software/execline/
