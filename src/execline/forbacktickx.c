@@ -3,34 +3,34 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+
 #include <skalibs/types.h>
 #include <skalibs/sgetopt.h>
 #include <skalibs/strerr2.h>
-#include <skalibs/djbunix.h>
+#include <skalibs/exec.h>
+
 #include <execline/config.h>
 #include <execline/execline.h>
 
-#define USAGE "forbacktickx [ -p | -o okcode,okcode,... | -x breakcode,breakcode,... ] [ -n ] [ -C | -c ] [ -0 | -d delim ] var { backtickcmd... } command..."
+#define USAGE "forbacktickx [ -p | -o okcode,okcode,... | -x breakcode,breakcode,... ] [ -E | -e ] [ -N | -n ] [ -C | -c ] [ -0 | -d delim ] var { backtickcmd... } command..."
 #define dieusage() strerr_dieusage(100, USAGE)
 
-#define DELIM_DEFAULT " \n\r\t"
-
-int main (int argc, char const *const *argv, char const *const *envp)
+int main (int argc, char const *const *argv)
 {
-  char const *delim = DELIM_DEFAULT ;
+  char const *delim = "\n" ;
   char const *codes = 0 ;
-  int crunch = 0, chomp = 0, not = 1, par = 0 ;
+  int crunch = 0, chomp = 1, not = 1, par = 0, doimport = 0 ;
   PROG = "forbacktickx" ;
   {
     subgetopt_t l = SUBGETOPT_ZERO ;
     for (;;)
     {
-      int opt = subgetopt_r(argc, argv, "epnCc0d:o:x:", &l) ;
+      int opt = subgetopt_r(argc, argv, "pNnCc0d:o:x:Ee", &l) ;
       if (opt == -1) break ;
       switch (opt)
       {
-	case 'e' : break ; /* compat */
         case 'p' : par = 1 ; break ;
+        case 'N' : chomp = 0 ; break ;
         case 'n' : chomp = 1 ; break ;
         case 'C' : crunch = 1 ; break ;
         case 'c' : crunch = 0 ; break ;
@@ -54,6 +54,8 @@ int main (int argc, char const *const *argv, char const *const *envp)
           not = 1 ;
           break ;
         }
+        case 'E' : doimport = 1 ; break ;
+        case 'e' : doimport = 0 ; break ;
         default : dieusage() ;
       }
     }
@@ -65,7 +67,7 @@ int main (int argc, char const *const *argv, char const *const *envp)
   {
     unsigned int m = 0, i = 1 ;
     int fd = dup(0) ;
-    char const *newargv[argc + 18] ;
+    char const *newargv[argc + 19] ;
     char fmt[UINT_FMT] ;
     if (fd < 0)
     {
@@ -81,11 +83,12 @@ int main (int argc, char const *const *argv, char const *const *envp)
     newargv[m++] = EXECLINE_BINPREFIX "unexport" ;
     newargv[m++] = "!" ;
     newargv[m++] = EXECLINE_BINPREFIX "forstdin" ;
+    newargv[m++] = doimport ? "-E" : "-e" ;
     if (par) newargv[m++] = "-p" ;
-    if (chomp) newargv[m++] = "-n" ;
+    newargv[m++] = chomp ? "-n" : "-N" ;
     if (crunch) newargv[m++] = "-C" ;
     if (!delim) newargv[m++] = "-0" ;
-    else if (strcmp(delim, DELIM_DEFAULT))
+    else if (strcmp(delim, "\n"))
     {
       newargv[m++] = "-d" ;
       newargv[m++] = delim ;
@@ -110,6 +113,6 @@ int main (int argc, char const *const *argv, char const *const *envp)
     }
     while (argv[i]) newargv[m++] = argv[i++] ;
     newargv[m++] = 0 ;
-    xpathexec_run(newargv[0], newargv, envp) ;
+    xexec(newargv) ;
   }
 }

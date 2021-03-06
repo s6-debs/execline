@@ -1,11 +1,13 @@
 /* ISC license. */
 
-#include <sys/types.h>
 #include <sys/wait.h>
+
 #include <skalibs/sgetopt.h>
 #include <skalibs/types.h>
 #include <skalibs/strerr2.h>
 #include <skalibs/djbunix.h>
+#include <skalibs/exec.h>
+
 #include <execline/execline.h>
 
 #define USAGE "ifthenelse [ -X ] { command-if... } { command-then... } { command-else... } [ remainder... ]"
@@ -59,12 +61,12 @@ int main (int argc, char const **argv, char const *const *envp)
       argv += argc2 + 1 ;
       argc2 = argc3 ;
     }
-    if (magicscope)  /* undocumented voodoo - dangerous and powerful */
+    if (magicscope)  /* undocumented on purpose: powerful but dangerous */
     {
       unsigned int i = 0 ;
       for (; remainder[i] ; i++) argv[argc2+i] = remainder[i] ;
       argv[argc2+i] = 0 ;
-      xpathexec0_run(argv, envp) ;
+      xexec0_e(argv, envp) ;
     }
     else
     {

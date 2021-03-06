@@ -13,12 +13,14 @@
 #include <skalibs/strerr2.h>
 #include <skalibs/stralloc.h>
 #include <skalibs/djbunix.h>
+#include <skalibs/env.h>
+#include <skalibs/exec.h>
 
 #define USAGE "posix-cd [ -L | -P ] [ - | path ] [ prog... ]"
 #define dieusage() strerr_dieusage(100, USAGE)
 #define dienomem() strerr_diefu1sys(111, "stralloc_catb")
 
-int main (int argc, char const **argv, char const *const *envp)
+int main (int argc, char const **argv)
 {
   int phy = 0 ;
   int dopwd = 0 ;
@@ -91,7 +93,7 @@ int main (int argc, char const **argv, char const *const *envp)
     size_t sabase = sa.len ;
     if (sagetcwd(&sa) < 0) strerr_diefu1sys(111, "getcwd") ;
     if (!stralloc_0(&sa)) dienomem() ;
-    if (!pathexec_env("OLDPWD", sa.s + sabase)) dienomem() ;
+    if (!env_mexec("OLDPWD", sa.s + sabase)) dienomem() ;
     sa.len = sabase ;
   }
 
@@ -114,7 +116,7 @@ int main (int argc, char const **argv, char const *const *envp)
       stralloc_free(&sa) ;
       sa = tmp ;
     }
-    if (!pathexec_env("PWD", sa.s)) dienomem() ;
+    if (!env_mexec("PWD", sa.s)) dienomem() ;
 #ifdef PATH_MAX
     if (sa.len > PATH_MAX && strlen(where) < PATH_MAX && x && *x)
     {
@@ -144,7 +146,7 @@ int main (int argc, char const **argv, char const *const *envp)
     sa.len = 0 ;
     if (sagetcwd(&sa) < 0) strerr_diefu1sys(111, "getcwd") ;
     if (!stralloc_0(&sa)) dienomem() ;
-    if (!pathexec_env("PWD", sa.s)) dienomem() ;
+    if (!env_mexec("PWD", sa.s)) dienomem() ;
   }
   
   if (dopwd)
@@ -154,5 +156,5 @@ int main (int argc, char const **argv, char const *const *envp)
       strerr_diefu1sys(111, "write to stdout") ;
   }
 
-  xpathexec0(argv) ;
+  xmexec0(argv) ;
 }
