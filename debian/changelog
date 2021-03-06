@@ -1,3 +1,9 @@
+execline (2.8.0.0-1) buster; urgency=medium
+
+  * New upstream release.
+
+ -- multi <multi@in-addr.xyz>  Sat, 06 Mar 2021 13:11:54 +0000
+
 execline (2.6.1.1-1) stable; urgency=medium
 
   * New upstream release.
